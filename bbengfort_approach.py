@@ -1,7 +1,7 @@
 ## Imports
 import os
 import git
-
+import csv
 
 ## Module Constants
 DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
@@ -88,9 +88,12 @@ output = []
 used   = []
 
 for i in data:
+
+    print i
+
     if i["time"] not in used:
         used.append(i["time"])
-        output.append([i["time"], i["insertions"] , i["deletions"]])
+        output.append([i["time"], i["insertions"] , i["deletions"], i["timestamp"].split("+")[0]])
     else:
         for n, j in enumerate(output):
             if j[0] == i["time"]:
@@ -100,6 +103,21 @@ for i in data:
 output = sorted(output, key=lambda x: x[0])
 
 print output
+
+
+with open('changes.csv', 'wb') as myfile:
+    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+
+    wr.writerow(["date", "close"])
+
+    for i in output:
+        wr.writerow([i[3], i[1]])
+
+
+
+
+
+
 
 
 
