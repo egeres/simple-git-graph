@@ -108,10 +108,10 @@ print output
 with open('changes.csv', 'wb') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 
-    wr.writerow(["date", "close"])
+    wr.writerow(["date", "insertions", "deletions"])
 
     for i in output:
-        wr.writerow([i[3], i[1]])
+        wr.writerow([i[3], i[1], i[2]])
 
 
 
