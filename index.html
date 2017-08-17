@@ -1,7 +1,13 @@
 <!DOCTYPE html>
-<svg width="960" height="500"></svg>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="js/lodash.js"></script>
+<header>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="js/lodash.js"></script>
+</header>
+<body>
+  <svg width="5000" height="900"></svg>
+
+</body>
+
 <script>
 
 var svg = d3.select("svg"),
@@ -20,14 +26,16 @@ var ny = d3.scaleLinear().rangeRound([height/ -2 , 0]    );
 
 var line = d3.line()
     // .curve(d3.curveCatmullRomOpen.alpha(1))
-    .curve(d3.curveCardinal.tension(0.7))
+    // .curve(d3.curveCardinal.tension(0.7))
+    .curve(d3.curveMonotoneX)
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.insertions); });
 
 var nline = d3.line()
-    .curve(d3.curveCardinal.tension(0.7))
+    // .curve(d3.curveCardinal.tension(0.7))
+    .curve(d3.curveMonotoneX)
     .x(function(d) { return x(d.date); })
-    .y(function(d) { return ny(d.insertions) + height; });
+    .y(function(d) { return ny(d.deletions) + height; });
 
 
 d3.csv("changes.csv", function(d) {
@@ -38,9 +46,22 @@ d3.csv("changes.csv", function(d) {
 }, function(error, data) {
   if (error) throw error;
 
-  x.domain( d3.extent(data, function(d) { return d.date; }));
-  y.domain( d3.extent(data, function(d) { return d.insertions; }));
-  ny.domain(d3.extent(data, function(d) { return d.insertions; }));
+  x.domain(
+  d3.extent(data, function(d) { return d.date; })
+  );
+
+  tmp_0 = d3.extent(data, function(d) { return d.insertions; })[1]
+  tmp_1 = d3.extent(data, function(d) { return d.deletions;  })[1]
+
+  biggest = 0;
+
+  if (tmp_0 >= tmp_1) { biggest = tmp_0; }
+  else                { biggest = tmp_1; }
+
+
+  y.domain([0,biggest ]);
+
+  ny.domain([0,biggest]);
 
   g.append("g")
       .attr("transform", "translate(0," + height + ")")
@@ -58,13 +79,27 @@ d3.csv("changes.csv", function(d) {
   //     .attr("text-anchor", "end")
   //     .text("Price ($)");
 
-  // console.log(data);
+  console.log(data);
+  // console.log(d3.extent(data, function(d) { return d.insertions; }));
+  // console.log(d3.extent(data, function(d) { return d.insertions; })[1]);
   // console.log(data["0"])
   // console.log(Object.keys(data).length)
 
   tmp = _.clone(data[(Object.keys(data).length-2).toString()])
   data.push(tmp)
   data[(Object.keys(data).length-2).toString()]["insertions"] = 0
+  data[(Object.keys(data).length-2).toString()]["deletions"] = 0
+
+  tmp = _.clone(data[(0).toString()])
+  data.unshift(tmp)
+  data[(0).toString()]["insertions"] = 0
+  data[(0).toString()]["deletions"] = 0
+  // tmp = _.clone(data[(Object.keys(data).length-2).toString()])
+  // data.push(tmp)
+  // data["0"]["insertions"] = 0
+
+
+
 
   // console.log(typeof data)
   // console.log(data.lenght)
@@ -92,13 +127,17 @@ d3.csv("changes.csv", function(d) {
       .attr("d", nline)
       .attr("fill", "rgb(228, 79, 79)")
 
+  // data = data.splice(0, 1)
+  // data = data.pop()
+  // data = data.shift()
 
   g.selectAll("alguna_cosa")
       .data(data)
       .enter().append("circle")
-      .attr("r", 1.5)
+      .attr("r", 3.5)
       .attr("cx", function(d,i){ return x(d.date);  })
-      .attr("cy", function(d,i){ return y(d.insertions); })
+      // .attr("cy", function(d,i){ return y(d.insertions); })
+      .attr("cy", function(d,i){ return 0 + height/2; })
 });
 
 </script>
