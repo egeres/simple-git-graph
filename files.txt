@@ -1,5 +1,5 @@
 index.html
 bbengfort_approach.py
 README.md
-style.css
+css/style.css
 create_json.py

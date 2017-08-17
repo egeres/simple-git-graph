@@ -3,6 +3,7 @@ import os
 import git
 import csv
 import argparse
+import datetime
 
 output        = []
 used          = []
@@ -11,10 +12,16 @@ list_of_files = []
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('-d', action="store", dest="directory", help='route of the git directory')
 parser.add_argument('-f', action="store", dest="file_list", help='list of files to keep track of')
+parser.add_argument('-s', action="store", dest="sparse", help='percentage of maximun space free between curves')
 arguments = parser.parse_args()
 
 if not arguments.directory:
     arguments.directory = os.getcwd()
+
+if not arguments.sparse:
+    arguments.sparse = 0.01
+else:
+    arguments.sparse = float(arguments.sparse)
 
 if arguments.file_list:
     with open(arguments.file_list) as f:
@@ -129,11 +136,11 @@ for i in data:
         # aa = len(arguments.directory.replace("\\","\\\\")) + 2
         aa = len(arguments.directory) + 1
 
-        print arguments.directory.replace("\\","\\\\")
-        print len(arguments.directory.replace("\\","\\\\"))
-        print i["object"]
-        print i["object"][aa::]
-        print i["object"][aa::] in list_of_files
+        # print arguments.directory.replace("\\","\\\\")
+        # print len(arguments.directory.replace("\\","\\\\"))
+        # print i["object"]
+        # print i["object"][aa::]
+        # print i["object"][aa::] in list_of_files
 
         if i["object"][aa::] in list_of_files:
             for n, j in enumerate(output):
@@ -142,11 +149,30 @@ for i in data:
                     output[n][2] += i["deletions"]
 
 output = sorted(output, key=lambda x: x[0])
-# print output
 
+print        output[0 ]
+print "0  ", output[0 ][0]
+print "-1 ", output[-1][0]
 
+total_difference = abs(output[-1][0] - output[0][0])
 
+extra_stack = []
+for n, i in enumerate(output):
+    if n+1 < len(output):
+        if abs(i[0] - output[n][0]) < total_difference * arguments.sparse:
+            dateeee = i[0] + total_difference * arguments.sparse * 0.5
+            print dateeee
+            # str_dat = datetime.datetime.fromtimestamp(int("1284101485")).strftime('%Y-%m-%d %H:%M:%S')
+            str_dat = datetime.datetime.fromtimestamp(int(dateeee)).strftime(DATE_TIME_FORMAT)
+            # str_dat = dateeee.strftime(DATE_TIME_FORMAT)
+            print str_dat
+            extra_stack.append([dateeee, 0, 0, str_dat.split("+")[0]])
+            print "adding stop points..."
 
+for i in extra_stack:
+    output.append(i)
+
+output = sorted(output, key=lambda x: x[0])
 
 with open('changes.csv', 'wb') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
