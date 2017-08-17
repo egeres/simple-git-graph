@@ -2,6 +2,18 @@
 import os
 import git
 import csv
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('-d', action="store", dest="d", help='route of the git directory')
+arguments = parser.parse_args()
+
+if not arguments.d:
+    arguments.d = os.getcwd()
+
+
+
 
 ## Module Constants
 DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
@@ -82,7 +94,9 @@ def diff_type(diff):
     if diff.new_file: return 'A'
     return 'M'
 
-data = versions(os.getcwd())
+print arguments.d
+
+data = versions(str(arguments.d))
 
 output = []
 used   = []
