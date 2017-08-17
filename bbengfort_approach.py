@@ -4,16 +4,26 @@ import git
 import csv
 import argparse
 
+output        = []
+used          = []
+list_of_files = []
 
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('-d', action="store", dest="d", help='route of the git directory')
+parser.add_argument('-d', action="store", dest="directory", help='route of the git directory')
+parser.add_argument('-f', action="store", dest="file_list", help='list of files to keep track of')
 arguments = parser.parse_args()
 
-if not arguments.d:
-    arguments.d = os.getcwd()
+if not arguments.directory:
+    arguments.directory = os.getcwd()
 
+if arguments.file_list:
+    with open(arguments.file_list) as f:
+        list_of_files = f.readlines()
+    list_of_files = [x.strip() for x in list_of_files]
 
-
+print "list_of_files       =", list_of_files
+print "arguments.directory =", arguments.directory
+print "arguments.directory =", arguments.directory.replace("\\","\\\\")
 
 ## Module Constants
 DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
@@ -94,36 +104,53 @@ def diff_type(diff):
     if diff.new_file: return 'A'
     return 'M'
 
-print arguments.d
+# print arguments.d
 
-data = versions(str(arguments.d))
+data = versions(str(arguments.directory))
 
-output = []
-used   = []
+#list_of_files
 
 for i in data:
 
-    print i
+    # print "\n"*3
+    # for j in i.iteritems(): print j
 
     if i["time"] not in used:
         used.append(i["time"])
-        output.append([i["time"], i["insertions"] , i["deletions"], i["timestamp"].split("+")[0]])
-    else:
+        # output.append([i["time"], i["insertions"] , i["deletions"], i["timestamp"].split("+")[0]])
+        output.append([ i["time"], 0, 0, i["timestamp"].split("+")[0] ])
+
+    if len(list_of_files) == 0:
         for n, j in enumerate(output):
             if j[0] == i["time"]:
                 output[n][1] += i["insertions"]
                 output[n][2] += i["deletions"]
+    else:
+        # aa = len(arguments.directory.replace("\\","\\\\")) + 2
+        aa = len(arguments.directory) + 1
+
+        print arguments.directory.replace("\\","\\\\")
+        print len(arguments.directory.replace("\\","\\\\"))
+        print i["object"]
+        print i["object"][aa::]
+        print i["object"][aa::] in list_of_files
+
+        if i["object"][aa::] in list_of_files:
+            for n, j in enumerate(output):
+                if j[0] == i["time"]:
+                    output[n][1] += i["insertions"]
+                    output[n][2] += i["deletions"]
 
 output = sorted(output, key=lambda x: x[0])
+# print output
 
-print output
+
+
 
 
 with open('changes.csv', 'wb') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-
     wr.writerow(["date", "insertions", "deletions"])
-
     for i in output:
         wr.writerow([i[3], i[1], i[2]])
 

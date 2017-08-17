@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <header>
+  <link   rel="stylesheet" type="text/css" href="css/style.css">
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="js/lodash.js"></script>
 </header>
-<body>
-  <svg width="5000" height="900"></svg>
 
+<body>
+<svg id="main_graph" width="500" height="900"></svg>
 </body>
+
 
 <script>
 
-var svg = d3.select("svg"),
-    margin = {top: 20, right: 20, bottom: 30, left: 50},
+var svg = d3.select("svg")
+
+// svg.attr("width") = window.innerWidth;
+document.getElementById('main_graph').setAttribute("width", window.innerWidth - 50);
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -118,14 +124,14 @@ d3.csv("changes.csv", function(d) {
       // .attr("stroke-linecap", "round")
       // .attr("stroke-width", 1.5)
       .attr("d", line)
-      .attr("fill", "rgb(158, 228, 79)")
+      .attr("fill", "rgb(99, 145, 87)")
 
 
   g.append("path")
       .datum(data)
       .attr("fill", "none")
       .attr("d", nline)
-      .attr("fill", "rgb(228, 79, 79)")
+      .attr("fill", "rgb(119, 63, 73)")
 
   // data = data.splice(0, 1)
   // data = data.pop()
