@@ -45,6 +45,12 @@ var nline = d3.line()
     .y(function(d) { return ny(d.deletions) + height; });
 
 
+
+
+
+
+
+
 d3.csv("changes.csv", function(d) {
   d.date = parseTime(d.date);
   d.insertions = + d.insertions;
@@ -70,9 +76,16 @@ d3.csv("changes.csv", function(d) {
   g.append("g")
       .attr("transform", "translate(0," + ( +ny(tmp_1) + 5 + height ).toString() + ")")
       .attr("class", "axisRed")
-      .call(d3.axisBottom(x).tickSize(20))
-    // .select(".domain")
-    //   .remove();
+      .call(d3.axisBottom(x).tickSize(20).ticks(5))
+
+  g.append("g")
+      .attr("transform", "translate(0," + ( +ny(tmp_1) + 5 + height ).toString() + ")")
+      .attr("class", "axisRed")
+
+      .call(d3.axisBottom(x).tickSize( -(ny(tmp_1) + 5 + height/2) ).ticks(2,""))
+
+    .select(".domain")
+      .remove();
 
   // g.append("g")
   //     .call(d3.axisLeft(y))

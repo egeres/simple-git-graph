@@ -5,9 +5,13 @@ import csv
 import argparse
 import datetime
 
-output        = []
-used          = []
-list_of_files = []
+output_add_del     = []
+used_add_del       = []
+
+output_commit_info = []
+used_commit_info   = []
+
+list_of_files      = []
 
 #python bbengfort_approach.py -f files.txt -sr 0.01
 
@@ -128,21 +132,27 @@ data = versions(str(arguments.directory))
 
 #list_of_files
 
+# print data[0]
+
 for i in data:
 
     # print "\n"*3
     # for j in i.iteritems(): print j
 
-    if i["time"] not in used:
-        used.append(i["time"])
-        # output.append([i["time"], i["insertions"] , i["deletions"], i["timestamp"].split("+")[0]])
-        output.append([ i["time"], 0, 0, i["timestamp"].split("+")[0] ])
+    if i["time"] not in used_commit_info:
+        used_commit_info.append(i["time"])
+        output_commit_info.append([i["time"], i["timestamp"].split("+")[0], i["message"].strip()])
+
+    if i["time"] not in used_add_del:
+        used_add_del.append(i["time"])
+        # output_add_del.append([i["time"], i["insertions"] , i["deletions"], i["timestamp"].split("+")[0]])
+        output_add_del.append([ i["time"], 0, 0, i["timestamp"].split("+")[0] ])
 
     if len(list_of_files) == 0:
-        for n, j in enumerate(output):
+        for n, j in enumerate(output_add_del):
             if j[0] == i["time"]:
-                output[n][1] += i["insertions"]
-                output[n][2] += i["deletions"]
+                output_add_del[n][1] += i["insertions"]
+                output_add_del[n][2] += i["deletions"]
     else:
         # aa = len(arguments.directory.replace("\\","\\\\")) + 2
         aa = len(arguments.directory) + 1
@@ -154,27 +164,27 @@ for i in data:
         # print i["object"][aa::] in list_of_files
 
         if i["object"][aa::] in list_of_files:
-            for n, j in enumerate(output):
+            for n, j in enumerate(output_add_del):
                 if j[0] == i["time"]:
-                    output[n][1] += i["insertions"]
-                    output[n][2] += i["deletions"]
+                    output_add_del[n][1] += i["insertions"]
+                    output_add_del[n][2] += i["deletions"]
 
-output = sorted(output, key=lambda x: x[0])
+output_add_del = sorted(output_add_del, key=lambda x: x[0])
 
-# print        output[0 ]
-# print "0  ", output[0 ][0]
-# print "-1 ", output[-1][0]
+# print        output_add_del[0 ]
+# print "0  ", output_add_del[0 ][0]
+# print "-1 ", output_add_del[-1][0]
 
-total_difference = abs(output[-1][0] - output[0][0])
+total_difference = abs(output_add_del[-1][0] - output_add_del[0][0])
 
 extra_stack = []
 
-for n, i in enumerate(output):
-    if n+1 < len(output):
+for n, i in enumerate(output_add_del):
+    if n+1 < len(output_add_del):
 
-        print abs(i[0] - output[n+1][0]), "<", (total_difference * arguments.sparse_right)
+        print abs(i[0] - output_add_del[n+1][0]), "<", (total_difference * arguments.sparse_right)
 
-        if abs(i[0] - output[n+1][0]) > (total_difference * arguments.sparse_right):
+        if abs(i[0] - output_add_del[n+1][0]) > (total_difference * arguments.sparse_right):
             dateeee = i[0] + (total_difference * arguments.sparse_right / 2)
             print dateeee
             # str_dat = datetime.datetime.fromtimestamp(int("1284101485")).strftime('%Y-%m-%d %H:%M:%S')
@@ -185,9 +195,9 @@ for n, i in enumerate(output):
             print "adding stop points to the right..."
 
 
-for n, i in enumerate(output):
+for n, i in enumerate(output_add_del):
     if n > 0:
-        if abs(i[0] - output[n-1][0]) > total_difference * arguments.sparse_left:
+        if abs(i[0] - output_add_del[n-1][0]) > total_difference * arguments.sparse_left:
             dateeee = i[0] - (total_difference * arguments.sparse_left / 2)
             print dateeee
             str_dat = datetime.datetime.fromtimestamp(int(dateeee)).strftime(DATE_TIME_FORMAT)
@@ -196,19 +206,24 @@ for n, i in enumerate(output):
             print "adding stop points to the left..."
 
 for i in extra_stack:
-    output.append(i)
+    output_add_del.append(i)
 
-output = sorted(output, key=lambda x: x[0])
+output_add_del = sorted(output_add_del, key=lambda x: x[0])
 
 with open('changes.csv', 'wb') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     wr.writerow(["date", "insertions", "deletions"])
-    for i in output:
+    for i in output_add_del:
         wr.writerow([i[3], i[1], i[2]])
 
 
+output_commit_info = sorted(output_commit_info, key=lambda x: x[0])
 
-
+with open('commits.csv', 'wb') as myfile:
+    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+    wr.writerow(["date", "message"])
+    for i in output_commit_info:
+        wr.writerow([i[1], i[2]])
 
 
 
