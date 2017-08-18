@@ -1,3 +1,18 @@
 body {
   background-color: rgb(29, 29, 29);
 }
+
+.axisRed line{
+  stroke: rgb(96, 96, 96);
+  stroke-width: 2px;
+}
+
+.axisRed path{
+  stroke: rgb(96, 96, 96);
+  stroke-width: 2px;
+}
+
+.axisRed text{
+  fill: rgb(96, 96, 96);
+  font-size: 20px;
+}

@@ -27,14 +27,12 @@ arguments = parser.parse_args()
 if not arguments.directory:
     arguments.directory = os.getcwd()
 
-if not arguments.sparse: arguments.sparse = 1
-else: arguments.sparse                    = float( arguments.sparse )
-
-if arguments.sparse_left: arguments.sparse_left   = float( arguments.sparse_left )
-else: arguments.sparse_left                       = arguments.sparse
-
-if arguments.sparse_right: arguments.sparse_right = float( arguments.sparse_right )
-else: arguments.sparse_right                      = arguments.sparse
+if not arguments.sparse: arguments.sparse             = 1
+else:  arguments.sparse                               = float( arguments.sparse )
+if     arguments.sparse_left: arguments.sparse_left   = float( arguments.sparse_left )
+else:  arguments.sparse_left                          =        arguments.sparse
+if     arguments.sparse_right: arguments.sparse_right = float( arguments.sparse_right )
+else:  arguments.sparse_right                         =        arguments.sparse
 
 if arguments.file_list:
     with open(arguments.file_list) as f:
@@ -187,15 +185,15 @@ for n, i in enumerate(output):
             print "adding stop points to the right..."
 
 
-# for n, i in enumerate(output):
-#     if n > 0:
-#         if abs(i[0] - output[n-1][0]) > total_difference * arguments.sparse_left:
-#             dateeee = i[0] - total_difference * arguments.sparse_right
-#             print dateeee
-#             str_dat = datetime.datetime.fromtimestamp(int(dateeee)).strftime(DATE_TIME_FORMAT)
-#             print str_dat
-#             extra_stack.append([dateeee, 0, 0, str_dat.split("+")[0]])
-#             print "adding stop points to the left..."
+for n, i in enumerate(output):
+    if n > 0:
+        if abs(i[0] - output[n-1][0]) > total_difference * arguments.sparse_left:
+            dateeee = i[0] - (total_difference * arguments.sparse_left / 2)
+            print dateeee
+            str_dat = datetime.datetime.fromtimestamp(int(dateeee)).strftime(DATE_TIME_FORMAT)
+            print str_dat
+            extra_stack.append([dateeee, 0, 0, str_dat.split("+")[0]])
+            print "adding stop points to the left..."
 
 for i in extra_stack:
     output.append(i)

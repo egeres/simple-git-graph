@@ -59,22 +59,20 @@ d3.csv("changes.csv", function(d) {
 
   tmp_0 = d3.extent(data, function(d) { return d.insertions; })[1]
   tmp_1 = d3.extent(data, function(d) { return d.deletions;  })[1]
-
   biggest = 0;
 
   if (tmp_0 >= tmp_1) { biggest = tmp_0; }
   else                { biggest = tmp_1; }
 
-
-  y.domain([0,biggest ]);
-
-  ny.domain([0,biggest]);
+  y.domain( [0, biggest]);
+  ny.domain([0, biggest]);
 
   g.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-    .select(".domain")
-      .remove();
+      .attr("transform", "translate(0," + ( +ny(tmp_1) + 5 + height ).toString() + ")")
+      .attr("class", "axisRed")
+      .call(d3.axisBottom(x).tickSize(20))
+    // .select(".domain")
+    //   .remove();
 
   // g.append("g")
   //     .call(d3.axisLeft(y))
