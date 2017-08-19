@@ -92,7 +92,8 @@ var tooltip_pin       = d3.select("#tooltip_pin")
 
 d3.select("#tooltip_pin_triangle").append('path')
       .attr('d', function(d) {return 'M 0 0 l 10 25 l 10 -25 z';})
-      .attr("pointer-events","none");
+      .attr("pointer-events","none")
+      .attr("fill","rgba(0, 0, 0, 0.8)");
 
 // var tooltip = tooltip_container
     // .append("div")
@@ -238,15 +239,16 @@ d3.csv("commits.csv", function(d) {
   g.selectAll("alguna_cosa")
       .data(data)
       .enter().append("circle")
-      .attr("r", 10)
+      .attr("r", 15)
       .attr("opacity", 0.5)
       .attr("fill", "#000000")
-      .attr("cx", function(d,i){ return x(d.date);  })
+      .attr("cx", function(d,i){ return x(d.date) - 5;  })
       .attr("cy", function(d,i){ return 0 + height/2; })
 
       .on("mouseover", function()
       {
         var input = this.__data__;
+        tooltip_pin.style( "opacity",    "1"      );
         return tooltip.style("visibility", "visible").text( function(intput){ return (input.message).toString(); } );
       })
 
@@ -255,15 +257,22 @@ d3.csv("commits.csv", function(d) {
         // console.log(            tooltip_container.style("width"));
         // console.log( typeof     tooltip_container.style("width"));
         // console.log( parseFloat(tooltip_container.style("width")));
-
+        var input = this.__data__;
         return tooltip_container
-        .style("top", (event.pageY - 45 - document.getElementById('tooltip').clientHeight  )+"px")
-        .style("left",(event.pageX - (parseFloat(tooltip_container.style("width"))/2))+"px");
+        .style("top", (  height / 2 //event.pageY
+
+          - 11 - document.getElementById('tooltip').clientHeight  )+"px")
+
+
+        // .style("left",(event.pageX - (parseFloat(tooltip_container.style("width"))/2))+"px");
+        .style("left",(x(input.date) + 50 + 3 //svg.margin["left"]
+        - (parseFloat(tooltip_container.style("width"))/2))+"px");
       })
 
     	.on("mouseout", function()
       {
-        return tooltip.style("visibility", "hidden");
+        tooltip.style(     "visibility", "hidden" );
+        tooltip_pin.style( "opacity",    "0"      );
       });
 
 });
