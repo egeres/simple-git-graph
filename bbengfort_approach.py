@@ -1,4 +1,3 @@
-## Imports
 import os
 import git
 import csv

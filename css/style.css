@@ -30,3 +30,18 @@ body {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.7);
 }
+
+.tooltip_pin {
+  position:absolute;
+  width: 20px;
+  height: 30px;
+  background-color: rgb(105, 255, 29);
+}
+
+.tooltip_container {
+  /*padding-left: 10px;*/
+  margin: auto;
+  width: 250px;
+  background-color: rgb(233, 59, 10);
+  position: absolute;
+}

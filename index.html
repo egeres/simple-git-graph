@@ -45,13 +45,24 @@ var nline = d3.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return ny(d.deletions) + height; });
 
-var tooltip = d3.select("body")
+var tooltip_container = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip_container")
+
+// var tooltip = d3.select("body")
+var tooltip = tooltip_container
     .append("div")
     .attr("class", "tooltip")
-    .style("position", "absolute")
+    .attr("id", "main_tooltip")
+    // .style("position", "absolute")
     // .style("z-index", "10")
     // .style("visibility", "hidden")
     .text("a simple tooltip");
+
+// var tooltip_pin = d3.select("body")
+var tooltip_pin = tooltip_container
+    .append("div")
+    .attr("class", "tooltip_pin")
 
 // var tip = d3.tip()
 //     // .attr('class', 'd3-tip')
@@ -196,7 +207,13 @@ d3.csv("commits.csv", function(d) {
 
         return tooltip.style("visibility", "visible").text( function(intput){ return (input.message).toString(); } );
       })
-    	.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+    	.on("mousemove", function()
+      {
+        return tooltip_container
+        .style("top", (event.pageY - 30 - document.getElementById('main_tooltip').clientHeight  )+"px")
+        .style("left",(event.pageX - 250/2)+"px");
+      })
+
     	.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
 });
