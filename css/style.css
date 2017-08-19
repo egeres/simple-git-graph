@@ -21,27 +21,79 @@ body {
   font-size: 30px;
   background-color: #7bcd1d;
 }*/
-.tooltip {
+
+table {
+  border-spacing: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+td {
+  padding: 0px;
+  margin: 0px;
+}
+tr {
+  padding: 0px;
+  margin: 0px;
+}
+div {
+  padding: 0px;
+  margin: 0px;
+}
+#tooltip {
+  /*float: left;*/
+  /*position: relative;*/
+
   padding: 5px;
   color: rgb(196, 251, 230);
   fill:rgb(172, 244, 228);
   font-family: arial;
   font-size: 20px;
-  position: absolute;
+  /*position: absolute;*/
   background-color: rgba(0, 0, 0, 0.7);
+  /*display: block;*/
+  margin:0 auto;
+  float: left;
+
+  display: inline-block;
+  vertical-align: top;
+  pointer-events:none;
+
 }
 
-.tooltip_pin {
-  position:absolute;
+#tooltip_pin {
+  padding: 0px;
+
+  display: block;
+  /*vertical-align: bottom;*/
+  /*align-self: center;*/
+  margin:0 auto;
+  /*float: left;*/
+  /*position:relative;*/
   width: 20px;
-  height: 30px;
+  height: 25px;
   background-color: rgb(105, 255, 29);
+  pointer-events:none;
 }
 
-.tooltip_container {
+#tooltip_container {
+  padding: 0px;
+  margin: 0px;
+  pointer-events:none;
+  /*align-content: center;*/
+  /*align-items: center;*/
   /*padding-left: 10px;*/
-  margin: auto;
-  width: 250px;
+  /*display: block;*/
+  /*display: inline-block;*/
+  /*vertical-align: middle;*/
+  /*margin:0 auto;*/
+  /*align-items: center;*/
+  max-width: 250px;
   background-color: rgb(233, 59, 10);
   position: absolute;
+}
+
+#tooltip_pin_triangle {
+  margin: 0px;
+  padding: 0px;
+  pointer-events:none;
 }
