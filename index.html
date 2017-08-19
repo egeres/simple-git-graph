@@ -4,6 +4,7 @@
   <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
   <script src="js/d3.v4.3.0.js"></script>
   <script src="js/lodash.js">   </script>
+  <!-- <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script> -->
 </header>
 
 <body>
@@ -43,6 +44,26 @@ var nline = d3.line()
     .curve(d3.curveMonotoneX)
     .x(function(d) { return x(d.date); })
     .y(function(d) { return ny(d.deletions) + height; });
+
+var tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    // .style("z-index", "10")
+    // .style("visibility", "hidden")
+    .text("a simple tooltip");
+
+// var tip = d3.tip()
+//     // .attr('class', 'd3-tip')
+//     .attr('class', 'tooltip')
+//     .offset([-10, 0])
+//     .html(function(d) {
+//       return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+//     })
+
+
+
+
 
 
 
@@ -141,7 +162,7 @@ d3.csv("changes.csv", function(d) {
 
   g.append("path")
       .datum(data)
-      .attr("fill", "none")
+      // .attr("fill", "none")
       .attr("d", nline)
       .attr("fill", "rgb(119, 63, 73)")
 
@@ -149,13 +170,35 @@ d3.csv("changes.csv", function(d) {
   // data = data.pop()
   // data = data.shift()
 
+
+});
+
+
+d3.csv("commits.csv", function(d) {
+  d.date = parseTime(d.date);
+  // d.message = d.message;
+  return d;
+}, function(error, data) {
+
   g.selectAll("alguna_cosa")
       .data(data)
       .enter().append("circle")
-      .attr("r", 3.5)
+      .attr("r", 10)
+      .attr("opacity", 0.5)
+      .attr("fill", "#000000")
       .attr("cx", function(d,i){ return x(d.date);  })
       // .attr("cy", function(d,i){ return y(d.insertions); })
       .attr("cy", function(d,i){ return 0 + height/2; })
+
+      .on("mouseover", function(){
+        // var d = this.__data__;
+        var input = this.__data__;
+
+        return tooltip.style("visibility", "visible").text( function(intput){ return (input.message).toString(); } );
+      })
+    	.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+    	.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+
 });
 
 </script>
